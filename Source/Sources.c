@@ -1,3 +1,6 @@
 #include "Descriptors/descriptors.c"
 #include "Drivers/VGA/vga.c"
 #include "Memory/mem.c"
+#include "Drivers/PIC/PIC.c"
+#include "Drivers/Timers/timers.c"
+#include "Processing/tasking.c"

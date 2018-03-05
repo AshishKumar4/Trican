@@ -13,7 +13,7 @@ OBJ_DIR:=$(ASSEMBLY)
 SRC_FILES := $(wildcard $(ASSEMBLY)/*.asm)
 OBJ_FILES := $(patsubst $(ASSEMBLY)/%.asm,$(ASSEMBLY)/%.o,$(SRC_FILES))
 
-FLAGS:= -O2 -ffreestanding -fbuiltin -Wall -Wextra -nostdlib -lgcc -fno-builtin -fno-stack-protector $(INCLUDED)
+FLAGS:= -O0 -ffreestanding -fbuiltin -Wall -Wextra -nostdlib -lgcc -fno-builtin -fno-stack-protector $(INCLUDED)
 
 all: clean build-asm build-kernel
 

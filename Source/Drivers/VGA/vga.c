@@ -36,7 +36,10 @@ int vga_putchar(char ch)   // Puts a character on the console next to the last c
 		if(consolerow >= VGA_HEIGHT)
 		{
 			++console_rows_skipped;
-			console_dbuffer += (VGA_WIDTH);
+            for(int i = 0; i < (VGA_WIDTH * (VGA_HEIGHT)); i++)     // Shift the complete console screen a bit up
+            {
+                console_dbuffer[i] = console_dbuffer[i + VGA_WIDTH];      
+            }
 			--consolerow;
 		}
 		return (int)ch;  // Nothing needs to be printed

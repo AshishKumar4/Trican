@@ -25,11 +25,9 @@ uint32_t pop_frameStack()
 	back:
 	fr = *frame_stack_end;
 	--frame_stack_end;
-	//printf("--A--");
 	if(!fr)
 	{
 		printf("\nNo memory left! %x",fr);
-		//while(1);
 		asm volatile("hlt");
 		goto back;
 	}
@@ -49,18 +47,16 @@ uint32_t phy_alloc4K()
 
 uint32_t base_addr = (40*1024*1024);
 
-uint32_t kmalloc(size_t size)
+void* kmalloc(size_t size)
 {
     uint32_t a = base_addr;
 	base_addr += size;
-	//printf("<%d>", a);
-    return a;
+    return (void*)a;
 }
 
 uint32_t pmem_4k(int size)  // Returns 4 Kilobyte aligned Memory i.e, memory address rounded up to 4096.
 {
 	uint32_t tmp = ((uint32_t)kmalloc((size+1)*4096));
-	//printf("\n[%d]", tmp);
 	return ROUNDUP(tmp, 4096);
 }
 

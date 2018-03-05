@@ -28,12 +28,13 @@ section .text
 
 PIT_handler:
   cli
+  pusha
 
-  push eax
-  mov eax, 0xFEE000B0                ; APIC Timer End Of Interrupt
-  mov dword [eax], 0
+  call PIT_Handle
 
-  push edx
+  popa 
+  push eax 
+  push ebx 
   mov dx, 0x20                      ; PIT Timer End Of Interrupt
   mov ax, 0x20
   out dx, ax

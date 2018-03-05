@@ -5,6 +5,9 @@ void kernel_start()
 {
     init_descriptor_tables();
     vga_init();
+    enable_pic();
+    init_timer_PIT(100);
+
     mem_init();
     tasking_init();
     
