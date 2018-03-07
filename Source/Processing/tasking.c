@@ -5,6 +5,7 @@
 #include "Memory/mem.h"
 
 #include "Scheduler.c"
+#include "Shell/Shell.h"
 
 void idle_task()
 {
@@ -13,14 +14,13 @@ void idle_task()
 
 void Spawner_Task()
 {
-  printf("This Shit is WORKING!");
-  while(1)
-    printf("1 ");
+  kill();
+  while(1);
 }
-
+/*
 void Spawner_Task2()
 {
-  printf("This Shit is WORKING!");
+  printf("This Shit is WORKING2!");
   while(1)
     printf("2 ");
 }
@@ -30,7 +30,7 @@ void Spawner_Task3()
   printf("This Shit is WORKING!");
   while(1)
     printf("3 ");
-}
+}*/
 
 int tasking_init()
 {
@@ -43,8 +43,11 @@ int tasking_init()
     current_task = Idle_task;
 
     Enqueue_task(&active_queue, create_task("System_Spawner", &Spawner_Task, 0, 0x202));
-    Enqueue_task(&active_queue, create_task("System_Spawner2", &Spawner_Task2, 0, 0x202));
-    Enqueue_task(&active_queue, create_task("System_Spawner3", &Spawner_Task3, 0, 0x202));
+   /* Enqueue_task(&active_queue, create_task("System_Spawner2", &Spawner_Task2, 0, 0x202));
+    Enqueue_task(&active_queue, create_task("System_Spawner3", &Spawner_Task3, 0, 0x202));*/
+
+    Shell_task = create_task("Shell", &Shell, 0, 0x202);
+    Enqueue_task(&active_queue, Shell_task);
 
     idtSetEntry(32, (uint32_t)&switcher_ksp_t, 0x08, makeFlagByte(1, KERNEL_MODE), (uint64_t*)&idt_entries);
     lidt((void *)&idt_ptr);
@@ -111,7 +114,9 @@ void kill()
 	uintptr_t place_holder = (uintptr_t)(current_task->active);
 	Task_Remover(&active_queue, place_holder);
     kfree(current_task);
-    Scheduler();
+    asm volatile("sti");
+    while(1);
+    //Scheduler();
 }
 
 /*

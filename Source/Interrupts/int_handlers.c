@@ -2,6 +2,9 @@
 #include "stdint.h"
 #include "stdlib.h"
 #include "stddef.h"
+#include "sys.h"
+#include "Drivers/Keyboard/scancodes.h"
+#include "Drivers/Keyboard/keyboard.h"
 
 void divByZero_handler()
 {
@@ -131,17 +134,17 @@ void reserved_handler()
 //#ifdef PIC
 void PIT_Handle()
 {
-    printf("\nPIT ticked");
+    //printf("\nPIT ticked");
 }
 
 void keyboardInterrupt_handler()
 {
-/*  int scancode=inb(0x60);
+  int scancode=inb(0x60);
   if(scancode <= 0x80+0x60)
   {
     MainScodes->scodes[scancode].func(MainScodes->scodes[scancode].code);
    // printf("[%x %x]", scancode, scancodes[scancode]);
-  }*/
+  }
 }
 
 void cascade_handler()

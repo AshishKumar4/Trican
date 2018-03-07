@@ -16,6 +16,23 @@ int vga_init()
     return 0;
 }
 
+void set_vgaCursor(int row, int col)
+{
+   unsigned short position=(row*80) + col;
+
+   // cursor LOW port to vga INDEX register
+   outb(0x3D4, 0x0F);
+   outb(0x3D5, ((unsigned char)(position&0xFF)));
+   // cursor HIGH port to vga INDEX register
+   outb(0x3D4, 0x0E);
+   outb(0x3D5, ((unsigned char )((position>>8)&0xFF)));
+}
+
+void vga_updateCursor()
+{
+	set_vgaCursor(consolerow, consolecolumn);
+}
+
 inline void vga_setcolor(uint8_t color)
 {
 	console_color = color;  // Sets the console color for future characters
@@ -42,6 +59,7 @@ int vga_putchar(char ch)   // Puts a character on the console next to the last c
             }
 			--consolerow;
 		}
+		vga_updateCursor();
 		return (int)ch;  // Nothing needs to be printed
 	}
 	else if(ch == '\t')      // If Tab Character
@@ -64,8 +82,10 @@ int vga_putchar(char ch)   // Puts a character on the console next to the last c
             }
 			--consolerow;
 		}
+		vga_updateCursor();
 		return (int)ch;
 	}
+	vga_updateCursor();
 	return (int)ch;
 }
 

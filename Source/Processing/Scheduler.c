@@ -2,7 +2,7 @@
 
 void Scheduler()    // Round Robin Simple
 {
-    if(current_Qpos == active_queue.Qlength)
+    if(current_Qpos >= active_queue.Qlength)
     {
         current_Qpos = 0;
     }

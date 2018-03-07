@@ -4,6 +4,7 @@
 #include "stdint.h"
 #include "string.h"
 #include "../../Drivers/VGA/vga.h"
+#include "common.h"
 
 int putchar(int ch)
 {
@@ -23,6 +24,129 @@ void printint(uint32_t in)
 	print(tmp, strlen(tmp));
 }
 
+char* _stdgetin(uint32_t* stream, int size, char dlimiter)
+{
+	uint32_t* st = stream;
+	char* sts = (char*)st;
+
+	char* fst = &sts[*st];
+	int i = 0;
+	for(; i < size; i++)
+	{
+		if(fst[i] == dlimiter)
+		{
+			fst[i] = '\0';
+			break;
+		}
+	}
+	st[1] = i;
+	st[0] += st[1];
+	return fst;
+}
+
+extern int enter_pressed;
+
+int scanf(const char* restrict format, ...)
+{
+    while(!enter_pressed);
+    enter_pressed = 0;
+	
+	uint32_t size = std_in[1];// = ;
+
+	va_list parameters;
+	va_start(parameters, format);
+/*
+	STD_OUT_sz = 0;
+	STD_OUT_sz4 = 0;
+*/
+	int written = 0;
+	size_t amount;
+	bool rejected_bad_specifier = false;
+
+//	printf("\n<%x>", format);
+//	printf("%s", format);
+//	printf("%c", *format);
+	while ( *format != '\0' )
+	{
+		if ( *format != '%' )
+		{
+		_print_c:
+			amount = 1;
+			while ( format[amount] && format[amount] != '%' )
+				amount++;
+			format += amount;
+			written += amount;
+			continue;
+		}
+
+		const char* format_begun_at = format;
+
+		if ( *(++format) == '%' )
+			goto _print_c;
+
+		if ( rejected_bad_specifier )
+		{
+		_incomprehensible_conversion:
+			rejected_bad_specifier = true;
+			format = format_begun_at;
+			goto _print_c;
+		}
+
+		if ( *format == 'c' )
+		{
+			format++;
+			char* c = (char*) va_arg(parameters, char*);
+			*c = (_stdgetin(std_in, 1, ' '))[0];
+		}
+		else if ( *format == 's' )
+		{
+			format++;
+			char* s = (char*)va_arg(parameters, char*);
+			char* o = _stdgetin(std_in, size, ' ');
+			if(s) 
+			{
+				strcpy(s, o);
+			}
+		}
+		else if(*format == 'i' ||*format == 'd')
+		{
+				format++;
+				int* c = (int*)va_arg (parameters, uintptr_t);
+				*c = StrToInt(_stdgetin(std_in, size, ' '));
+		}
+		else if(*format == 'l' || *format == 'u') //uint32_t
+		{
+				format++;
+				uint32_t* c = (uint32_t*)va_arg (parameters, uintptr_t);
+				*c = StrToInt(_stdgetin(std_in, size, ' '));
+		}
+		else if(*format == 'p'||*format == 'g') //color
+		{
+				format++;
+				int c = (int)va_arg (parameters, int);
+				if(!c)
+					console_color = default_console_color;
+				else
+					console_color = c;
+		}
+		else if(*format == 'f') //float
+		{
+				format++;
+		}
+		else if(*format == 'x') //uint32_t
+		{
+				format++;
+		}
+		else
+		{
+			goto _incomprehensible_conversion;
+		}
+	}
+	
+	
+	va_end(parameters);
+	return size;
+}
 
 int printf(const char* restrict format, ...)
 {

@@ -4,3 +4,5 @@
 #include "Drivers/PIC/PIC.c"
 #include "Drivers/Timers/timers.c"
 #include "Processing/tasking.c"
+#include "Drivers/Keyboard/Keyboard.c"
+#include "Shell/Shell.c"

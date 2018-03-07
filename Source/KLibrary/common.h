@@ -7,7 +7,8 @@
 
 typedef void (*func_t)();	//void function pointer
 typedef uintptr_t (*func_ptr_t)();	//void function pointer
-typedef uint32_t (*intfunc2_t)(uint32_t, uint32_t);	//int function pointer with 2 arguments
+typedef uint32_t (*uintfunc2_t)(uint32_t, uint32_t);	//int function pointer with 2 arguments
+typedef int (*intfunc1_t)(int);	//int function pointer with 2 arguments
 
 uint32_t PIT_Counter = 0;
 
@@ -139,6 +140,22 @@ int posix_time()
 	return 0xffff;
 }
 
+uint32_t StrToInt(char *str)
+{
+		if(!str) return 0;
+    uint32_t in=0;
+    int ln=strlen(str);
+    int arr[999],a=1;
+    for(int i=0;i<=ln;i++) a=a*10;
+    a=a/100;
+    for(int i=0;i<=ln;i++)
+    {
+        arr[i]=str[i]-48;
+        in=in+arr[i]*a;
+        a=a/10;
+    }
+		return in;
+}
 
 int ByteSequence_Replace(uint32_t magic, uint32_t nbytes, uint32_t replacement, uint32_t mbytes, uint32_t* start, uint32_t* end)
 {
